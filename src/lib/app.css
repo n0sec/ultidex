@@ -4,4 +4,9 @@
 
 html {
 	font-family: 'Montserrat', sans-serif;
+	@apply bg-neutral-900 dark:text-white;
+}
+
+nav ul a {
+	@apply dark:hover:text-neutral-200;
 }
