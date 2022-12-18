@@ -1,20 +1,37 @@
 import type { PageLoad } from './$types';
+import { request, gql } from 'graphql-request';
 export const prerender = true;
 
-export const load = (async ({ fetch }) => {
-	// Fetch epages of pokemon
-	// Response contains `name` and `url`
-	// From the home page example -- https://pokeapi.co/
-	const limit: number = 5;
-	const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`);
-	const data = await res.json();
-
-	let promises: Array<Promise<Response>> = [];
-	promises = data.results.map(async (pokemon: { url: RequestInfo | URL }) => {
-		promises.push(fetch(pokemon.url).then((resp) => resp.json()));
-		return await Promise.all(promises);
-	});
-
-	// return the json
-	// return await res.json();
+const endPoint: string = 'https://beta.pokeapi.co/graphql/v1beta';
+const query = gql`
+	query getPokemonData($limit: Int) {
+		pokemon_v2_pokemon(limit: $limit, offset: 0) {
+			id
+			name
+			pokemon_v2_pokemonstats(distinct_on: id) {
+				base_stat
+				effort
+				pokemon_v2_stat {
+					name
+				}
+			}
+			pokemon_v2_pokemontypes(distinct_on: id) {
+				pokemon_v2_type {
+					name
+					id
+				}
+			}
+			pokemon_v2_pokemonsprites(distinct_on: id) {
+				sprites
+				pokemon_id
+			}
+		}
+	}
+`;
+const variables = {
+	limit: 20
+};
+export const load = (async () => {
+	// Uses GraphQL to request Pokemon Data
+	return await request(endPoint, query, variables);
 }) satisfies PageLoad;
