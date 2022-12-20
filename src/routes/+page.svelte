@@ -14,7 +14,7 @@
 			>{pokemon.name}
 		</h1>
 		<div class="flex flex-row mt-6 justify-around">
-			{#each pokemon.pokemon_v2_pokemonsprites as sprites, index}
+			{#each pokemon.pokemon_v2_pokemonsprites as sprites}
 				<img
 					src={JSON.parse(sprites.sprites)['front_default']}
 					alt="{pokemon.name} Sprite"
