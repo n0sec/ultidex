@@ -2,7 +2,6 @@
 	import '$lib/app.css';
 	import logo from '$lib/assets/pokeball_logo.png';
 	import { page } from '$app/stores';
-	import { browser } from '$app/environment';
 
 	function toTop() {
 		document.body.scrollIntoView({
