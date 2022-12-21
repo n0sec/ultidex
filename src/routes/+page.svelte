@@ -39,7 +39,7 @@
 			</div>
 		</div>
 		<div class="flex flex-row mt-3 items-center justify-between">
-			<div class="flex space-x-3 justify-center">
+			<div class="flex space-x-3">
 				{#each pokemon.pokemon_v2_pokemontypes as types}
 					<PokemonType pokemonType={types.pokemon_v2_type.name} />
 				{/each}
