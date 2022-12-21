@@ -25,6 +25,13 @@ const query = gql`
 				sprites
 				pokemon_id
 			}
+			pokemon_v2_pokemonstats_aggregate(distinct_on: id) {
+				aggregate {
+					sum {
+						base_stat
+					}
+				}
+			}
 		}
 	}
 `;
