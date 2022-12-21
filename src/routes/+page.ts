@@ -25,11 +25,18 @@ const query = gql`
 				sprites
 				pokemon_id
 			}
+			pokemon_v2_pokemonstats_aggregate(distinct_on: id) {
+				aggregate {
+					sum {
+						base_stat
+					}
+				}
+			}
 		}
 	}
 `;
 const variables = {
-	limit: 20
+	limit: 500
 };
 export const load = (async () => {
 	// Uses GraphQL to request Pokemon Data
