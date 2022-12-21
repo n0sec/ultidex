@@ -29,10 +29,7 @@
 				class="statBar h-4"
 				style:width="{(baseStat / 255) * 100}%"
 				style:background={statMap[statName]}
-			>
-				<!-- <div class="font-medium mr-6 uppercase">{statName.replace('-', ' ')}</div>
-                <div>{baseStat}</div> -->
-			</div>
+			/>
 		</div>
 	</div>
 </div>
