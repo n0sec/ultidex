@@ -36,7 +36,7 @@ const query = gql`
 	}
 `;
 const variables = {
-	limit: 500
+	limit: 20
 };
 export const load = (async () => {
 	// Uses GraphQL to request Pokemon Data
