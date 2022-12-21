@@ -88,9 +88,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	/* .pokemon-type {
-		border-width: 2.5px;
-	} */
-</style>
