@@ -38,10 +38,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex flex-row space-x-3 mt-3 items-center">
-			{#each pokemon.pokemon_v2_pokemontypes as types}
-				<PokemonType pokemonType={types.pokemon_v2_type.name} />
-			{/each}
+		<div class="flex flex-row mt-3 items-center justify-between">
+			<div class="flex space-x-3 justify-center">
+				{#each pokemon.pokemon_v2_pokemontypes as types}
+					<PokemonType pokemonType={types.pokemon_v2_type.name} />
+				{/each}
+			</div>
 			<a href="/" class="mr-3 hover:text-gray-300">Details</a>
 		</div>
 	</div>
