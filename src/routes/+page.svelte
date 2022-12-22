@@ -1,16 +1,28 @@
 <script lang="ts">
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
+	import Fuse from 'fuse.js';
 	import type { PageData } from './$types';
 	export let data: PageData;
 
 	let pokemons = data.pokemon_v2_pokemon;
 	let searchInput: string;
+	const pokemonSearchableObject = data;
 	console.log(pokemons);
 
-	function updateQueryParams(event: any) {
+	function updateQueryParams() {
 		window.history.replaceState(null, '', `?q=${searchInput}`);
 	}
+
+	const fuseOptions = {
+		isCaseSensitive: false,
+		limit: 100,
+		keys: ['id', 'name', 'pokemon_v2_pokemontypes.pokemon_v2_type.name']
+	};
+
+	const fuse = new Fuse(pokemonSearchableObject as readonly any[], fuseOptions);
+
+	$: pokemons = fuse.search(searchInput);
 </script>
 
 <div class="container md:mx-auto md:w-[35%] mb-6">
