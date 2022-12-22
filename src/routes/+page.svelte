@@ -3,11 +3,12 @@
 	import PokemonType from '$lib/components/PokemonType.svelte';
 	import Fuse from 'fuse.js';
 	import type { PageData } from './$types';
+
 	export let data: PageData;
 
 	let pokemons = data.pokemon_v2_pokemon;
-	let searchInput: string;
-	const pokemonSearchableObject = data;
+	let searchInput: string = '';
+
 	console.log(pokemons);
 
 	function updateQueryParams() {
@@ -16,13 +17,15 @@
 
 	const fuseOptions = {
 		isCaseSensitive: false,
-		limit: 100,
-		keys: ['id', 'name', 'pokemon_v2_pokemontypes.pokemon_v2_type.name']
+		keys: ['name']
 	};
 
-	const fuse = new Fuse(pokemonSearchableObject as readonly any[], fuseOptions);
+	const fuse = new Fuse(data as readonly any[], fuseOptions);
 
-	$: pokemons = fuse.search(searchInput);
+	let result = fuse.search(searchInput, { limit: 100 });
+	console.log(result);
+
+	$: pokemons = result;
 </script>
 
 <div class="container md:mx-auto md:w-[35%] mb-6">
