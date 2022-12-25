@@ -48,7 +48,7 @@
 				>
 					<li>
 						<a
-							href="/"
+							href="/pokemon-details"
 							class="block py-2 pl-3 pr-4"
 							class:active={$page.url.pathname == '/'}
 							aria-current="page">Pokédex</a

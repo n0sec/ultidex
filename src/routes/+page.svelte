@@ -45,7 +45,7 @@
 				{/each}
 			</div>
 			<!-- TODO: Add this in when routes are done -->
-			<a href="/" class="mr-3 hover:text-gray-300">Details</a>
+			<a href={`/pokedex/${pokemon.id}`} class="mr-3 hover:text-gray-300">Details</a>
 		</div>
 	</div>
 {/each}

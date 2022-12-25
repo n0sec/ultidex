@@ -78,7 +78,7 @@
 </script>
 
 <div class="flex">
-	<div
+	<div 
 		class="pokemon-type rounded-md py-1 shadow-md border-[2.5px]"
 		style:background={typeMap[pokemonType].bg}
 		style:border-color={typeMap[pokemonType].border}
