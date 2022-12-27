@@ -5,26 +5,31 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
 	let pokemons = data.pokemon_v2_pokemon;
-	let searchInput: string = '';
-
 	console.log(pokemons);
 
-	function updateQueryParams() {
-		window.history.replaceState(null, '', `?q=${searchInput}`);
-	}
+	let searchInput: string = '';
 
+	// Define Fuse Options
 	const fuseOptions = {
 		isCaseSensitive: false,
-		keys: ['name']
+		keys: ['id', 'name']
 	};
 
-	const fuse = new Fuse(data as readonly any[], fuseOptions);
+	// Create Fuse object
+	// `data` is used as the object
+	const fuse = new Fuse(pokemons as readonly any[], fuseOptions);
 
-	let result = fuse.search(searchInput, { limit: 100 });
-	console.log(result);
+	// Define result before in global scope
+	let result: Fuse.FuseResult<any>[];
+	function doSearch() {
+		if (searchInput !== null || searchInput !== '') {
+			window.history.replaceState(null, '', `?q=${searchInput}`);
+			result = fuse.search(searchInput, { limit: 100 });
+		}
+	}
 
+	$: result;
 	$: pokemons = result;
 </script>
 
@@ -52,7 +57,7 @@
 			bind:value={searchInput}
 			class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
 			placeholder="Search by name, ID or type"
-			on:input={updateQueryParams}
+			on:input={doSearch}
 		/>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
