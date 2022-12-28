@@ -7,9 +7,13 @@
 	export let weight: number;
 	export let type;
 	export let abilities;
+	export let stats;
+
+	let ev_yield = stats.filter((stat) => stat.effort > 0);
+	console.log(ev_yield);
 </script>
 
-<table>
+<table class="table-auto">
 	<tr>
 		<th>
 			<p>ID</p>
@@ -56,6 +60,15 @@
 				{#each abilities as ability}
 					<p>{ability.pokemon_v2_ability.name}</p>
 				{/each}
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<th> EV Yield </th>
+		<td>
+			<div>
+				<p>{ev_yield[0].effort} {ev_yield[0].pokemon_v2_stat.name.replace('-', ' ')}</p>
 			</div>
 		</td>
 	</tr>

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import PokemonDetails from '../../../lib/components/PokemonDetails.svelte';
-
+	import PokemonDetails from '$lib/components/PokemonDetails.svelte';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
 
@@ -33,6 +32,7 @@
 			weight={pokemonDetails.weight / 10}
 			abilities={pokemonDetails.pokemon_v2_pokemonabilities}
 			type={pokemonDetails.pokemon_v2_pokemontypes}
+			stats={pokemonDetails.pokemon_v2_pokemonstats}
 		/>
 	</div>
 	<div class="flex items-center justify-center mt-6">
