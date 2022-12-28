@@ -40,6 +40,7 @@ export const load = (async ({ params }) => {
     weight
     pokemon_v2_pokemonstats {
       base_stat
+      effort
       pokemon_v2_stat {
         name
       }
@@ -61,6 +62,30 @@ export const load = (async ({ params }) => {
     }
     pokemon_v2_pokemontypes {
       pokemon_v2_type {
+        name
+      }
+    }
+    pokemon_v2_pokemonmoves(order_by: {level: asc}) {
+      level
+      pokemon_v2_move {
+        name
+        power
+        accuracy
+        pp
+        pokemon_v2_generation {
+          name
+        }
+        pokemon_v2_type {
+          name
+        }
+        pokemon_v2_moveflavortexts(where: {pokemon_v2_language: {name: {_eq: "en"}}}) {
+          flavor_text
+        }
+      }
+      pokemon_v2_versiongroup {
+        generation_id
+      }
+      pokemon_v2_movelearnmethod {
         name
       }
     }
