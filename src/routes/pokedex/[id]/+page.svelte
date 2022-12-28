@@ -13,7 +13,7 @@
 </script>
 
 <div style="margin: auto; width: 75%; max-width: 1000px">
-	<h1 class="flex items-center justify-center" style="padding-bottom: 20px;;">
+	<h1 class="flex items-center justify-center font-bold" style="padding-bottom: 20px;;">
 		{pokemonDetails.name}
 	</h1>
 	<div class="flex items-center justify-center">
@@ -36,7 +36,7 @@
 			/>
 		</div>
 	</div>
-	<container class="flex items-center justify-center" style="padding-top: 40px;">
+	<div class="flex items-center justify-center mt-6">
 		<div style="max-width: fit-content;">
 			{#each pokemonDetails.pokemon_v2_pokemonstats as stat}
 				<PokemonStat
@@ -46,8 +46,8 @@
 				/>
 			{/each}
 		</div>
-	</container>
-	<div class="flex items-center justify-center font-bold pl-4 pt-5" style="padding-top: 20px;">
+	</div>
+	<div class="flex items-center justify-center font-bold pl-4 pt-5">
 		Total: {pokemonDetails.pokemon_v2_pokemonstats_aggregate.aggregate.sum.base_stat}
 	</div>
 
@@ -55,7 +55,7 @@
 		<h1>Evoltion Chart</h1>
 		<div class="flex flex-row items-center justify-center font-bold pl-4 pt-5">
 			{#each pokemonEvolution.pokemon_v2_pokemonspecies as evolutions}
-				<div class="flex grow flex-col items-center justify-center" style="padding: 20px;">
+				<div class="flex grow flex-col items-center justify-center p-5">
 					<p style="text-transform: capitalize; padding-bottom: 25px;">{evolutions.name}</p>
 					{#each evolutions.pokemon_v2_pokemons[0].pokemon_v2_pokemonsprites as evoSprite}
 						<img
@@ -63,7 +63,7 @@
 							alt={pokemonDetails.name}
 							class="pokemon-sprite aspect-auto w-48 h-48"
 						/>
-						<div class="flex space-x-3" style="padding-top: 35px;">
+						<div class="flex space-x-3 pt-6">
 							{#each evolutions.pokemon_v2_pokemons[0].pokemon_v2_pokemontypes as evoTypes}
 								<PokemonType pokemonType={evoTypes.pokemon_v2_type.name} />
 							{/each}
