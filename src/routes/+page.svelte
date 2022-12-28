@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
 	import Fuse from 'fuse.js';
@@ -6,14 +7,19 @@
 
 	export let data: PageData;
 	let pokemons = data.pokemon_v2_pokemon;
+
+	// ? Debugging
 	console.log(pokemons);
 
+	// Initialize the search input
 	let searchInput: string = '';
 
 	// Define Fuse Options
+	// Lower threshold to prevent odd matches like Blastoise matching on "Bulbasaur"
 	const fuseOptions = {
 		isCaseSensitive: false,
-		keys: ['id', 'name']
+		threshold: 0.45,
+		keys: ['name', 'id']
 	};
 
 	// Create Fuse object
@@ -22,15 +28,18 @@
 
 	// Define result before in global scope
 	let result: Fuse.FuseResult<any>[];
-	function doSearch() {
-		if (searchInput !== null || searchInput !== '') {
-			window.history.replaceState(null, '', `?q=${searchInput}`);
-			result = fuse.search(searchInput, { limit: 100 });
-		}
-	}
 
-	$: result;
-	$: pokemons = result;
+	const doSearch = (searchInput: string) => {
+		window.history.replaceState(null, '', `?q=${searchInput}`);
+		pokemons = fuse.search(searchInput).map((pokemon) => pokemon.item);
+		console.log(result);
+	};
+
+	$: if (searchInput === '') {
+		pokemons = data.pokemon_v2_pokemon;
+	} else {
+		pokemons;
+	}
 </script>
 
 <div class="container md:mx-auto md:w-[35%] mb-6">
@@ -56,8 +65,8 @@
 			id="default-search"
 			bind:value={searchInput}
 			class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
-			placeholder="Search by name, ID or type"
-			on:input={doSearch}
+			placeholder="Search by name"
+			on:input={() => doSearch(searchInput)}
 		/>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
