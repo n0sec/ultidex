@@ -1,41 +1,35 @@
-
 import { request, gql } from 'graphql-request';
 import type { PageServerLoad } from './$types';
 export const prerender = true;
 
-
 const endPoint: string = 'https://beta.pokeapi.co/graphql/v1beta';
 const query = gql`
-query PokemonDetails {
-	pokemon_v2_pokemon(where: {id: {_eq: 1}}) {
-	  id
-	  name
-	  height
-	  base_experience
-	  weight
-	  pokemon_v2_pokemonstats {
-		base_stat
-		pokemon_v2_stat {
-		  name
+	query PokemonDetails {
+		pokemon_v2_pokemon(where: { id: { _eq: 1 } }) {
+			id
+			name
+			height
+			base_experience
+			weight
+			pokemon_v2_pokemonstats {
+				base_stat
+				pokemon_v2_stat {
+					name
+				}
+			}
 		}
-	  }
+		pokemon_v2_pokemontype(distinct_on: id, limit: 2) {
+			pokemon_v2_type {
+				name
+			}
+		}
 	}
-	pokemon_v2_pokemontype(distinct_on: id, limit: 2) {
-	  pokemon_v2_type {
-		name
-	  }
-	}
-  }
 `;
 
-
-
-
-
- 
-export const load = (async ({params}) => {
+export const load = (async ({ params }) => {
 	// Uses GraphQL to request Pokemon Data
-	return await request(endPoint, 
+	return await request(
+		endPoint,
 		`
 		query PokemonDetails {
   pokemon_v2_pokemon(where: {id: {_eq: ${params.id}}}) {
@@ -87,11 +81,6 @@ export const load = (async ({params}) => {
       }
     }
   }
-}
-
-
-`
-		
-		 );
-	
+}`
+	);
 }) satisfies PageServerLoad;
