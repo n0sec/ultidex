@@ -5,9 +5,9 @@
 	export let id: number;
 	export let height: number;
 	export let weight: number;
-	export let type;
-	export let abilities;
-	export let stats;
+	export let type: Array<any>;
+	export let abilities: Array<any>;
+	export let stats: Array<any>;
 
 	let ev_yield = stats.filter((stat) => stat.effort > 0);
 	console.log(ev_yield);
