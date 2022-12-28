@@ -63,16 +63,13 @@
 
 <style>
 	p {
-		text-transform: capitalize;
+		@apply capitalize;
 	}
 
 	td {
-		padding: 5px;
-		display: flex;
+		@apply p-1 flex;
 	}
 	th {
-		text-align: right;
-		padding-left: 10px;
-		padding-right: 15px;
+		@apply text-right pl-2 pr-4;
 	}
 </style>
