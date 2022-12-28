@@ -53,12 +53,12 @@
 	<h1 class="mt-6 pb-5">Evolution Chart</h1>
 
 	<div class="flex justify-center">
-		<div class="flex flex-row items-center font-bold space-x-6 w-auto">
+		<div class="flex flex-row items-center space-x-6 w-auto">
 			{#each pokemonEvolution.pokemon_v2_pokemonspecies as evolutions, i}
 				<div class="flex flex-col items-center p-5">
-					<p class="capitalize pb-6">
-						{evolutions.name}
-					</p>
+					<h3 class="capitalize pb-6 hover:underline hover:underline-offset-4 text-xl font-medium">
+						<a href={evolutions.id} data-sveltekit-reload>{evolutions.name}</a>
+					</h3>
 					{#each evolutions.pokemon_v2_pokemons[0].pokemon_v2_pokemonsprites as evoSprite}
 						<img
 							src={JSON.parse(evoSprite.sprites)['front_default']}
@@ -88,7 +88,7 @@
 		image-rendering: pixelated;
 	}
 	img {
-		transform: scale(1.2);
+		transform: scale(1.1);
 		/* max-height: 300px; */
 	}
 </style>
