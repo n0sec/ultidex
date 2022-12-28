@@ -77,14 +77,14 @@
 	};
 </script>
 
-<div class="flex">
-	<div 
+<div class="flex items-center align-middle">
+	<div
 		class="pokemon-type rounded-md py-1 shadow-md border-[2.5px]"
 		style:background={typeMap[pokemonType].bg}
 		style:border-color={typeMap[pokemonType].border}
 	>
-		<div class="px-3 text-center font-bold text-sm">
-			{pokemonType.charAt(0).toUpperCase() + pokemonType.slice(1)}
+		<div class="px-3 text-center font-bold text-sm capitalize">
+			{pokemonType}
 		</div>
 	</div>
 </div>
