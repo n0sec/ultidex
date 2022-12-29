@@ -6,9 +6,20 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	let pokemons = data.pokemon_v2_pokemon;
+	let pokemons = data.pokemonData;
+	let statTotal: number = 0;
 
-	// ? Debugging
+	// // Loop over the array of pokemon
+	// pokemons.forEach((pokemon) => {
+	// 	// Loop over the `stats` array
+	// 	for (let stat of pokemon.stats) {
+	// 		// Add the base_stat to the statTotal
+	// 		statTotal = statTotal + stat.base_stat;
+	// 	}
+	// 	// Generate a new pokemons array with the new statTotal key
+	// 	pokemons.map((v) => ({ ...v, statTotal }));
+	// });
+
 	console.log(pokemons);
 
 	// Initialize the search input
@@ -36,13 +47,13 @@
 	};
 
 	$: if (searchInput === '') {
-		pokemons = data.pokemon_v2_pokemon;
+		pokemons = data.pokemonData;
 	} else {
 		pokemons;
 	}
 </script>
 
-<div class="container md:mx-auto md:w-[35%] mb-6">
+<div class="container mx-auto md:w-2/5 mb-6">
 	<div class="relative">
 		<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
 			<svg
@@ -74,38 +85,31 @@
 
 {#each pokemons as pokemon}
 	<div
-		class="bg-gray-700 container md:mx-auto md:shadow-md md:w-[35%] flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
+		class="bg-gray-700 container md:mx-auto md:shadow-md md:w-2/5 flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
 	>
 		<h1 class="uppercase font-semibold">
 			<span class="text-gray-400 mr-3">#{pokemon.id.toString().padStart(4, '0')}</span
 			>{pokemon.name}
 		</h1>
 		<div class="flex flex-row mt-6">
-			{#each pokemon.pokemon_v2_pokemonsprites as sprites}
-				<img
-					src={JSON.parse(sprites.sprites)['front_default']}
-					alt="{pokemon.name} Sprite"
-					class="pokemon-sprite aspect-auto w-48 h-48"
-				/>
-			{/each}
+			<img
+				src={pokemon.sprites.front_default}
+				alt="{pokemon.name} Sprite"
+				class="pokemon-sprite aspect-auto w-48 h-48"
+			/>
 			<div class="flex-col my-auto w-full">
-				{#each pokemon.pokemon_v2_pokemonstats as stat}
-					<PokemonStat
-						statName={stat.pokemon_v2_stat.name}
-						baseStat={stat.base_stat}
-						bind:statTotal={pokemon.pokemon_v2_pokemonstats_aggregate.aggregate.sum.base_stat}
-					/>
+				{#each pokemon.stats as stat}
+					<PokemonStat statName={stat.stat.name} baseStat={stat.base_stat} bind:statTotal />
 				{/each}
-				<!-- ? Can we set this equal to a variable somehow? -->
 				<div class="font-bold pl-4 pt-5">
-					Total: {pokemon.pokemon_v2_pokemonstats_aggregate.aggregate.sum.base_stat}
+					Total: {statTotal}
 				</div>
 			</div>
 		</div>
 		<div class="flex flex-row mt-3 items-center justify-between">
 			<div class="flex space-x-3">
-				{#each pokemon.pokemon_v2_pokemontypes as types}
-					<PokemonType pokemonType={types.pokemon_v2_type.name} />
+				{#each pokemon.types as types}
+					<PokemonType pokemonType={types.type.name} />
 				{/each}
 			</div>
 			<!-- TODO: Add this in when routes are done -->
