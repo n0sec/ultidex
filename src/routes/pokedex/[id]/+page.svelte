@@ -5,6 +5,7 @@
 
 	import type { PageData } from './$types';
 	import MaterialSymbolsArrowRightAltRounded from '$lib/components/MaterialSymbolsArrowRightAltRounded.svelte';
+	import PokemonMoves from '$lib/components/PokemonMoves.svelte';
 	export let data: PageData;
 
 	console.log(data);
@@ -77,6 +78,9 @@
 				{/if}
 			{/each}
 		</div>
+	</div>
+	<div class="flex mt-6 w-auto">
+		<PokemonMoves />
 	</div>
 </div>
 
