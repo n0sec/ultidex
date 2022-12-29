@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import PaginationControls from '$lib/components/PaginationControls.svelte';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
 	import Fuse from 'fuse.js';
@@ -7,13 +8,6 @@
 
 	export let data: PageData;
 	let pokemons = data.pokemonData;
-	let statTotal: number = 0;
-
-	pokemons = pokemons.map((v) => {
-		for (let stat of v.stats) {
-			statTotal += stat.base_stat;
-		}
-	});
 
 	console.log(pokemons);
 
@@ -76,6 +70,7 @@
 		/>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
+	<div class="flex mt-6"><PaginationControls /></div>
 </div>
 
 {#each pokemons as pokemon}
@@ -94,10 +89,14 @@
 			/>
 			<div class="flex-col my-auto w-full">
 				{#each pokemon.stats as stat}
-					<PokemonStat statName={stat.stat.name} baseStat={stat.base_stat} bind:statTotal />
+					<PokemonStat
+						statName={stat.stat.name}
+						baseStat={stat.base_stat}
+						statTotal={pokemon.statTotal}
+					/>
 				{/each}
 				<div class="font-bold pl-4 pt-5">
-					Total: {statTotal}
+					Total: {pokemon.statTotal}
 				</div>
 			</div>
 		</div>
