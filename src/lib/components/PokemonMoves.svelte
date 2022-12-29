@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let moves: Array<any>;
 
-    let levelUpMoves = moves.
+	let levelUpMoves;
 </script>
 
 <table class="border-collapse border border-slate-500 w-full">
