@@ -65,29 +65,31 @@ export const load = (async ({ params }) => {
         name
       }
     }
-    pokemon_v2_pokemonmoves(order_by: {level: asc}) {
+    pokemon_v2_pokemonmoves(distinct_on: level, order_by: {level: asc}) {
       level
-      pokemon_v2_move {
-        name
-        power
-        accuracy
-        pp
-        pokemon_v2_generation {
-          name
-        }
-        pokemon_v2_type {
-          name
-        }
-        pokemon_v2_moveflavortexts(where: {pokemon_v2_language: {name: {_eq: "en"}}}) {
-          flavor_text
-        }
-      }
       pokemon_v2_versiongroup {
         generation_id
       }
-      pokemon_v2_movelearnmethod {
+      pokemon_v2_move {
+        accuracy
         name
+        power
+        pp
+        priority
+        move_effect_chance
+        pokemon_v2_type {
+          name
+        }
+        pokemon_v2_moveflavortexts(distinct_on: move_id, where: {pokemon_v2_language: {name: {_eq: "en"}}}) {
+          flavor_text
+        }
+        pokemon_v2_moveeffect {
+          pokemon_v2_moveeffecteffecttexts(distinct_on: language_id) {
+            short_effect
+          }
+        }
       }
+      move_learn_method_id
     }
   }
   pokemon_v2_evolutionchain(where: {pokemon_v2_pokemonspecies: {id: {_eq: ${params.id}}}}) {
