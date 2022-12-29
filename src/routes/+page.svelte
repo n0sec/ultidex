@@ -9,16 +9,11 @@
 	let pokemons = data.pokemonData;
 	let statTotal: number = 0;
 
-	// // Loop over the array of pokemon
-	// pokemons.forEach((pokemon) => {
-	// 	// Loop over the `stats` array
-	// 	for (let stat of pokemon.stats) {
-	// 		// Add the base_stat to the statTotal
-	// 		statTotal = statTotal + stat.base_stat;
-	// 	}
-	// 	// Generate a new pokemons array with the new statTotal key
-	// 	pokemons.map((v) => ({ ...v, statTotal }));
-	// });
+	pokemons = pokemons.map((v) => {
+		for (let stat of v.stats) {
+			statTotal += stat.base_stat;
+		}
+	});
 
 	console.log(pokemons);
 
