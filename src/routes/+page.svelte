@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import PaginationBack from '$lib/components/PaginationBack.svelte';
+	import PaginationFirst from '$lib/components/PaginationFirst.svelte';
+	import PaginationLast from '$lib/components/PaginationLast.svelte';
+	import PaginationNext from '$lib/components/PaginationNext.svelte';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
 	import Fuse from 'fuse.js';
@@ -7,20 +11,6 @@
 
 	export let data: PageData;
 	let pokemons = data.pokemonData;
-	let statTotal: number = 0;
-
-	// // Loop over the array of pokemon
-	// pokemons.forEach((pokemon) => {
-	// 	// Loop over the `stats` array
-	// 	for (let stat of pokemon.stats) {
-	// 		// Add the base_stat to the statTotal
-	// 		statTotal = statTotal + stat.base_stat;
-	// 	}
-	// 	// Generate a new pokemons array with the new statTotal key
-	// 	pokemons.map((v) => ({ ...v, statTotal }));
-	// });
-
-	console.log(pokemons);
 
 	// Initialize the search input
 	let searchInput: string = '';
@@ -37,19 +27,24 @@
 	// `data` is used as the object
 	const fuse = new Fuse(pokemons as readonly any[], fuseOptions);
 
-	// Define result before in global scope
-	let result: Fuse.FuseResult<any>[];
-
 	const doSearch = (searchInput: string) => {
 		window.history.replaceState(null, '', `?q=${searchInput}`);
 		pokemons = fuse.search(searchInput).map((pokemon) => pokemon.item);
-		console.log(result);
 	};
+
+	let currentPage: number;
+	let lastPage: number;
 
 	$: if (searchInput === '') {
 		pokemons = data.pokemonData;
+		// If there's nothing in the search, it's just the length of the current array / 20 (our limit)
+		// Also, the last page would just be the total number of pokemon (data.data.count) / 20
+		currentPage = Math.floor(pokemons.length / 20);
+		lastPage = Math.floor(data.data.count / 20);
 	} else {
 		pokemons;
+		currentPage;
+		lastPage = Math.ceil(pokemons.length / 20);
 	}
 </script>
 
@@ -81,11 +76,25 @@
 		/>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
+
+	<!-- * Pagination Controls * -->
+	<div class="flex flex-row mt-6 justify-between align-middle items-center">
+		<div class="flex space-x-3 align-middle">
+			<PaginationFirst {data} />
+			<PaginationBack {data} />
+		</div>
+		<!-- ! Get total number of pages -->
+		<div class="flex font-bold">{currentPage} / {lastPage}</div>
+		<div class="flex space-x-3">
+			<PaginationNext {data} />
+			<PaginationLast {data} />
+		</div>
+	</div>
 </div>
 
 {#each pokemons as pokemon}
 	<div
-		class="bg-gray-700 container md:mx-auto md:shadow-md md:w-2/5 flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
+		class="pokemon-tile bg-gray-700 container md:mx-auto md:shadow-md md:w-2/5 flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
 	>
 		<h1 class="uppercase font-semibold">
 			<span class="text-gray-400 mr-3">#{pokemon.id.toString().padStart(4, '0')}</span
@@ -99,10 +108,14 @@
 			/>
 			<div class="flex-col my-auto w-full">
 				{#each pokemon.stats as stat}
-					<PokemonStat statName={stat.stat.name} baseStat={stat.base_stat} bind:statTotal />
+					<PokemonStat
+						statName={stat.stat.name}
+						baseStat={stat.base_stat}
+						statTotal={pokemon.statTotal}
+					/>
 				{/each}
 				<div class="font-bold pl-4 pt-5">
-					Total: {statTotal}
+					Total: {pokemon.statTotal}
 				</div>
 			</div>
 		</div>
@@ -117,9 +130,28 @@
 		</div>
 	</div>
 {/each}
+<div class="container mx-auto md:w-2/5 mb-6">
+	<!-- * Pagination Controls * -->
+	<div class="flex flex-row mt-6 justify-between items-center">
+		<div class="flex space-x-3">
+			<PaginationFirst {data} />
+			<PaginationBack {data} />
+		</div>
+		<!-- ! Get total number of pages -->
+		<div class="flex font-bold">{currentPage} / {lastPage}</div>
+		<div class="flex space-x-3">
+			<PaginationNext {data} />
+			<PaginationLast {data} />
+		</div>
+	</div>
+</div>
 
 <style>
 	.pokemon-sprite {
 		image-rendering: pixelated;
+	}
+
+	.pokemon-tile:last-child {
+		@apply mb-3;
 	}
 </style>
