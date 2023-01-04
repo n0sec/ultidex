@@ -5,7 +5,7 @@ const PAGE_SIZE = 20;
 export const load = (async ({ url, setHeaders }) => {
 	const search: string | null = url.searchParams.get('search');
 	const pageNumber = Math.max(Number(url.searchParams.get('page') ?? '1'), 1);
-	const offset = Number((pageNumber - 1) * 20);
+	const offset = Number(pageNumber - 1) * PAGE_SIZE;
 
 	console.log(pageNumber);
 	console.log(offset);

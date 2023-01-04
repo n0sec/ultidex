@@ -12,8 +12,6 @@
 
 	export let data: PageData;
 
-	console.log(data);
-
 	const updateSearch = debounce((search: string) => {
 		goto(`?search=${search}`, { keepFocus: true });
 	}, 300);
@@ -21,12 +19,11 @@
 		updateSearch(event.target.value);
 	};
 
-	let currentPage: number;
 	let lastPage: number;
 
 	$: {
 		data.pokemons;
-		currentPage = (data.offset + data.PAGE_SIZE) / data.PAGE_SIZE;
+		data.pageNumber;
 		if (data.search) {
 			lastPage = Math.ceil(data.pokemons.length / data.PAGE_SIZE);
 		} else {
@@ -69,11 +66,13 @@
 	<!-- * Pagination Controls * -->
 	<div class="flex flex-row mt-6 justify-between align-middle items-center">
 		<div class="flex space-x-3 align-middle">
-			<PaginationFirst {data} />
-			<PaginationBack {data} />
+			{#if data.pageNumber > 1}
+				<PaginationFirst {data} />
+				<PaginationBack {data} />
+			{/if}
 		</div>
 		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{currentPage} / {lastPage}</div>
+		<div class="flex font-bold">{data.pageNumber} / {lastPage}</div>
 		<div class="flex space-x-3">
 			<PaginationNext {data} />
 			<PaginationLast {data} />
@@ -123,11 +122,13 @@
 	<!-- * Pagination Controls * -->
 	<div class="flex flex-row mt-6 justify-between items-center">
 		<div class="flex space-x-3">
-			<PaginationFirst {data} />
-			<PaginationBack {data} />
+			{#if data.pageNumber > 1}
+				<PaginationFirst {data} />
+				<PaginationBack {data} />
+			{/if}
 		</div>
 		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{currentPage} / {lastPage}</div>
+		<div class="flex font-bold">{data.pageNumber} / {lastPage}</div>
 		<div class="flex space-x-3">
 			<PaginationNext {data} />
 			<PaginationLast {data} />
