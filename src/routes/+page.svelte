@@ -1,50 +1,37 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
+	import { debounce, last } from 'lodash-es';
 	import PaginationBack from '$lib/components/PaginationBack.svelte';
 	import PaginationFirst from '$lib/components/PaginationFirst.svelte';
 	import PaginationLast from '$lib/components/PaginationLast.svelte';
 	import PaginationNext from '$lib/components/PaginationNext.svelte';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
-	import Fuse from 'fuse.js';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
-	let pokemons = data.pokemonData;
 
-	// Initialize the search input
-	let searchInput: string = '';
+	console.log(data);
 
-	// Define Fuse Options
-	// Lower threshold to prevent odd matches like Blastoise matching on "Bulbasaur"
-	const fuseOptions = {
-		isCaseSensitive: false,
-		threshold: 0.45,
-		keys: ['name', 'id']
-	};
-
-	// Create Fuse object
-	// `data` is used as the object
-	const fuse = new Fuse(pokemons as readonly any[], fuseOptions);
-
-	const doSearch = (searchInput: string) => {
-		window.history.replaceState(null, '', `?q=${searchInput}`);
-		pokemons = fuse.search(searchInput).map((pokemon) => pokemon.item);
+	const updateSearch = debounce((search: string) => {
+		goto(`?search=${search}`, { keepFocus: true });
+	}, 300);
+	const handleInput = (event) => {
+		updateSearch(event.target.value);
 	};
 
 	let currentPage: number;
 	let lastPage: number;
 
-	$: if (searchInput === '') {
-		pokemons = data.pokemonData;
-		// If there's nothing in the search, it's just the length of the current array / 20 (our limit)
-		// Also, the last page would just be the total number of pokemon (data.data.count) / 20
-		currentPage = Math.floor(pokemons.length / 20);
-		lastPage = Math.floor(data.data.count / 20);
-	} else {
-		pokemons;
-		currentPage;
-		lastPage = Math.ceil(pokemons.length / 20);
+	$: {
+		data.pokemons;
+		currentPage = (data.offset + data.PAGE_SIZE) / data.PAGE_SIZE;
+		if (data.search) {
+			lastPage = Math.ceil(data.pokemons.length / data.PAGE_SIZE);
+		} else {
+			lastPage = Math.ceil(data.totalPokemon / 20);
+		}
 	}
 </script>
 
@@ -66,14 +53,16 @@
 				/></svg
 			>
 		</div>
-		<input
-			type="search"
-			id="default-search"
-			bind:value={searchInput}
-			class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
-			placeholder="Search by name"
-			on:input={() => doSearch(searchInput)}
-		/>
+		<form method="GET">
+			<input
+				type="search"
+				id="default-search"
+				value={$page.url.searchParams.get('search') || ''}
+				class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+				placeholder="Search by name"
+				on:input={handleInput}
+			/>
+		</form>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
 
@@ -92,7 +81,7 @@
 	</div>
 </div>
 
-{#each pokemons as pokemon}
+{#each data.pokemons as pokemon}
 	<div
 		class="pokemon-tile bg-gray-700 container md:mx-auto md:shadow-md md:w-2/5 flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
 	>
@@ -102,7 +91,7 @@
 		</h1>
 		<div class="flex flex-row mt-6">
 			<img
-				src={pokemon.sprites.front_default}
+				src={pokemon.sprites}
 				alt="{pokemon.name} Sprite"
 				class="pokemon-sprite aspect-auto w-48 h-48"
 			/>
