@@ -1,29 +1,42 @@
 import type { PageServerLoad } from './$types';
-import fs from 'fs';
+import POKEMONS from '$lib/server/pokemon_data.json';
+const PAGE_SIZE = 20;
 
-export const load = (async ({ fetch, url }) => {
-	let offset = Number(url.searchParams.get('offset') ?? '0');
+export const load = (async ({ url, setHeaders }) => {
+	const search: string | null = url.searchParams.get('search');
+	const pageNumber = Math.max(Number(url.searchParams.get('page') ?? '1'), 1);
 
-	const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
-	const data = await response.json();
+	const offset = Number(pageNumber - 1) * PAGE_SIZE;
 
-	let pokemonData = await Promise.all(
-		data.results.map((result: { url: RequestInfo | URL }) =>
-			fetch(result.url).then((response) => response.json())
-		)
-	);
+	const totalPokemon = POKEMONS.count;
+	const maxPages = Math.ceil(totalPokemon / PAGE_SIZE);
+	let searchedLength = 0;
 
-	pokemonData = pokemonData.map((v) => {
-		let statTotal: number = 0;
-		for (let stat of v.stats) {
-			statTotal += stat.base_stat;
-		}
-		return { ...v, statTotal };
+	let pokemons = POKEMONS.pokemon_data;
+
+	if (search) {
+		const lowerCasedSearch = search.toLowerCase();
+		pokemons = POKEMONS.pokemon_data.filter((p) =>
+			p.searchTerm.toLowerCase().includes(lowerCasedSearch)
+		);
+		searchedLength = pokemons.length;
+	}
+
+	pokemons = pokemons.slice(offset, offset + PAGE_SIZE);
+
+	setHeaders({
+		age: '100',
+		'Cache-Control': 'max-age=604800'
 	});
 
 	return {
-		data,
-		pokemonData,
-		offset
+		pokemons,
+		search,
+		offset,
+		pageNumber,
+		totalPokemon,
+		maxPages,
+		searchedLength,
+		PAGE_SIZE
 	};
 }) satisfies PageServerLoad;

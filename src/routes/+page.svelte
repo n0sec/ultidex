@@ -1,50 +1,34 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
+	import { debounce, last } from 'lodash-es';
 	import PaginationBack from '$lib/components/PaginationBack.svelte';
 	import PaginationFirst from '$lib/components/PaginationFirst.svelte';
 	import PaginationLast from '$lib/components/PaginationLast.svelte';
 	import PaginationNext from '$lib/components/PaginationNext.svelte';
 	import PokemonStat from '$lib/components/PokemonStat.svelte';
 	import PokemonType from '$lib/components/PokemonType.svelte';
-	import Fuse from 'fuse.js';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
-	let pokemons = data.pokemonData;
 
-	// Initialize the search input
-	let searchInput: string = '';
-
-	// Define Fuse Options
-	// Lower threshold to prevent odd matches like Blastoise matching on "Bulbasaur"
-	const fuseOptions = {
-		isCaseSensitive: false,
-		threshold: 0.45,
-		keys: ['name', 'id']
+	const updateSearch = debounce((search: string) => {
+		goto(`?search=${search}`, { keepFocus: true });
+	}, 300);
+	const handleInput = (event) => {
+		updateSearch(event.target.value);
 	};
 
-	// Create Fuse object
-	// `data` is used as the object
-	const fuse = new Fuse(pokemons as readonly any[], fuseOptions);
-
-	const doSearch = (searchInput: string) => {
-		window.history.replaceState(null, '', `?q=${searchInput}`);
-		pokemons = fuse.search(searchInput).map((pokemon) => pokemon.item);
-	};
-
-	let currentPage: number;
 	let lastPage: number;
 
-	$: if (searchInput === '') {
-		pokemons = data.pokemonData;
-		// If there's nothing in the search, it's just the length of the current array / 20 (our limit)
-		// Also, the last page would just be the total number of pokemon (data.data.count) / 20
-		currentPage = Math.floor(pokemons.length / 20);
-		lastPage = Math.floor(data.data.count / 20);
-	} else {
-		pokemons;
-		currentPage;
-		lastPage = Math.ceil(pokemons.length / 20);
+	$: {
+		data.pokemons;
+		data.pageNumber;
+		if (data.search) {
+			lastPage = Math.ceil(data.searchedLength / data.PAGE_SIZE);
+		} else {
+			lastPage = Math.ceil(data.totalPokemon / 20);
+		}
 	}
 </script>
 
@@ -66,33 +50,36 @@
 				/></svg
 			>
 		</div>
-		<input
-			type="search"
-			id="default-search"
-			bind:value={searchInput}
-			class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
-			placeholder="Search by name"
-			on:input={() => doSearch(searchInput)}
-		/>
+		<form method="GET">
+			<input
+				type="search"
+				id="default-search"
+				value={$page.url.searchParams.get('search') || ''}
+				class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+				placeholder="Search by name"
+				on:input={handleInput}
+			/>
+		</form>
 	</div>
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
 
 	<!-- * Pagination Controls * -->
-	<div class="flex flex-row mt-6 justify-between align-middle items-center">
-		<div class="flex space-x-3 align-middle">
-			<PaginationFirst {data} />
-			<PaginationBack {data} />
+	<div class="grid grid-cols-[1fr_max-content_1fr] grid-rows-1 mt-6 items-center">
+		<div class="col-start-1 row-start-1 space-x-3">
+			{#if data.pageNumber > 1}
+				<PaginationFirst {data} />
+				<PaginationBack {data} />
+			{/if}
 		</div>
-		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{currentPage} / {lastPage}</div>
-		<div class="flex space-x-3">
+		<div class="col-start-2">{data.pageNumber} / {lastPage}</div>
+		<div class="justify-self-end space-x-3">
 			<PaginationNext {data} />
-			<PaginationLast {data} />
+			<PaginationLast {data} searchMaxPages={lastPage} />
 		</div>
 	</div>
 </div>
 
-{#each pokemons as pokemon}
+{#each data.pokemons as pokemon}
 	<div
 		class="pokemon-tile bg-gray-700 container md:mx-auto md:shadow-md md:w-2/5 flex align-middle flex-col p-3 mt-3 border-2 rounded-md border-gray-600"
 	>
@@ -102,7 +89,7 @@
 		</h1>
 		<div class="flex flex-row mt-6">
 			<img
-				src={pokemon.sprites.front_default}
+				src={pokemon.sprites}
 				alt="{pokemon.name} Sprite"
 				class="pokemon-sprite aspect-auto w-48 h-48"
 			/>
@@ -132,16 +119,17 @@
 {/each}
 <div class="container mx-auto md:w-2/5 mb-6">
 	<!-- * Pagination Controls * -->
-	<div class="flex flex-row mt-6 justify-between items-center">
-		<div class="flex space-x-3">
-			<PaginationFirst {data} />
-			<PaginationBack {data} />
+	<div class="grid grid-cols-[1fr_max-content_1fr] grid-rows-1 mt-6 items-center">
+		<div class="col-start-1 row-start-1 space-x-3">
+			{#if data.pageNumber > 1}
+				<PaginationFirst {data} />
+				<PaginationBack {data} />
+			{/if}
 		</div>
-		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{currentPage} / {lastPage}</div>
-		<div class="flex space-x-3">
+		<div class="col-start-2">{data.pageNumber} / {lastPage}</div>
+		<div class="justify-self-end space-x-3">
 			<PaginationNext {data} />
-			<PaginationLast {data} />
+			<PaginationLast {data} searchMaxPages={lastPage} />
 		</div>
 	</div>
 </div>
