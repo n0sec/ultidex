@@ -74,7 +74,7 @@
 		<div class="col-start-2">{data.pageNumber} / {lastPage}</div>
 		<div class="justify-self-end space-x-3">
 			<PaginationNext {data} />
-			<PaginationLast {data} />
+			<PaginationLast {data} searchMaxPages={lastPage} />
 		</div>
 	</div>
 </div>
