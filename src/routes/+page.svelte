@@ -25,7 +25,7 @@
 		data.pokemons;
 		data.pageNumber;
 		if (data.search) {
-			lastPage = Math.ceil(data.pokemons.length / data.PAGE_SIZE);
+			lastPage = Math.ceil(data.searchedLength / data.PAGE_SIZE);
 		} else {
 			lastPage = Math.ceil(data.totalPokemon / 20);
 		}
@@ -64,16 +64,15 @@
 	<hr class="my-3 h-px bg-gray-200 border-0 dark:bg-gray-700" />
 
 	<!-- * Pagination Controls * -->
-	<div class="flex flex-row mt-6 justify-between align-middle items-center">
-		<div class="flex space-x-3 align-middle">
+	<div class="grid grid-cols-[1fr_max-content_1fr] grid-rows-1 mt-6 items-center">
+		<div class="col-start-1 row-start-1 space-x-3">
 			{#if data.pageNumber > 1}
 				<PaginationFirst {data} />
 				<PaginationBack {data} />
 			{/if}
 		</div>
-		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{data.pageNumber} / {lastPage}</div>
-		<div class="flex space-x-3">
+		<div class="col-start-2">{data.pageNumber} / {lastPage}</div>
+		<div class="justify-self-end space-x-3">
 			<PaginationNext {data} />
 			<PaginationLast {data} />
 		</div>
@@ -120,16 +119,15 @@
 {/each}
 <div class="container mx-auto md:w-2/5 mb-6">
 	<!-- * Pagination Controls * -->
-	<div class="flex flex-row mt-6 justify-between items-center">
-		<div class="flex space-x-3">
+	<div class="grid grid-cols-[1fr_max-content_1fr] grid-rows-1 mt-6 items-center">
+		<div class="col-start-1 row-start-1 space-x-3">
 			{#if data.pageNumber > 1}
 				<PaginationFirst {data} />
 				<PaginationBack {data} />
 			{/if}
 		</div>
-		<!-- ! Get total number of pages -->
-		<div class="flex font-bold">{data.pageNumber} / {lastPage}</div>
-		<div class="flex space-x-3">
+		<div class="col-start-2">{data.pageNumber} / {lastPage}</div>
+		<div class="justify-self-end space-x-3">
 			<PaginationNext {data} />
 			<PaginationLast {data} />
 		</div>
