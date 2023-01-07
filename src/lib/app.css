@@ -4,7 +4,7 @@
 
 html {
 	font-family: 'Montserrat', sans-serif;
-	@apply bg-neutral-900 dark:text-white;
+	@apply bg-neutral-900 dark:text-gray-100;
 }
 
 nav ul a {
