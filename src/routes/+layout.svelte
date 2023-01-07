@@ -44,12 +44,12 @@
 			</button>
 			<div class="hidden w-full md:block md:w-auto" id="navbar-default">
 				<ul
-					class="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 "
+					class="flex flex-col align-middle items-center mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 "
 				>
 					<li>
 						<a
 							href="/"
-							class="block py-2 pl-3 pr-4"
+							class="block py-2 pl-3 pr-4 hover:bg-red-800 rounded-md"
 							class:active={$page.url.pathname == '/'}
 							aria-current="page">Pokédex</a
 						>
@@ -57,7 +57,7 @@
 					<li>
 						<a
 							href="team-builder"
-							class="block py-2 pl-3 pr-4"
+							class="block py-2 pl-3 pr-4 hover:bg-red-800 rounded-md"
 							class:active={$page.url.pathname == 'team-builder'}
 							aria-current="page">Team Builder</a
 						>
@@ -66,7 +66,7 @@
 					<li>
 						<a
 							href="type-chart"
-							class="block py-2 pl-3 pr-4"
+							class="block py-2 pl-3 pr-4 hover:bg-red-800 rounded-md"
 							class:active={$page.url.pathname == 'type-chart'}
 							aria-current="page">Type Chart</a
 						>
@@ -98,6 +98,6 @@
 	@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 	.active {
-		@apply text-neutral-200;
+		@apply text-neutral-200 bg-red-800;
 	}
 </style>
