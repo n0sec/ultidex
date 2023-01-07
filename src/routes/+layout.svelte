@@ -71,6 +71,14 @@
 							aria-current="page">Type Chart</a
 						>
 					</li>
+					<li>
+						<a
+							href="about"
+							class="block py-2 pl-3 pr-4 hover:bg-red-800 rounded-md"
+							class:active={$page.url.pathname == 'about'}
+							aria-current="page">About</a
+						>
+					</li>
 				</ul>
 			</div>
 		</div>
